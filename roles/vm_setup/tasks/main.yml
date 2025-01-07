@@ -23,3 +23,25 @@
       community.libvirt.virt:
         command: start
         name: "{{ vm_name }}"
+
+- name: Extract the IP address of the new VM
+  shell: 'virsh domifaddr {{ vm_name }} | sed "/^$/d" | tail -n1 | xargs echo | cut -d " " -f 4 |  cut -d "/" -f 1'
+  register: vm_ip
+
+- name: Add the new host to the inventory
+  add_host:
+    name: "{{ vm_ip.stdout }}"
+    ansible_ssh_user: cirros
+    ansible_ssh_pass: gocubsgo  
+    ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p polyserv.ssh"'
+
+- name: Check user ID from VM
+  command: id
+  register: id_step
+
+- debug: msg="id={{ id_step.stdout }}"
+
+# Will not work because it requires python
+- name: Ping the new VM (delegated)
+  ansible.builtin.ping:
+  delegate_to: "{{ vm_ip.stdout }}"

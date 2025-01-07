@@ -1,0 +1,5 @@
+all:
+  vars:
+    vm_name: testvm
+  hosts:
+    'root@polyserv.ssh':

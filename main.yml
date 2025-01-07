@@ -1,0 +1,6 @@
+---
+- name: Install libvirt and setup VM
+  hosts: all
+  roles:
+    - libvirt
+    - vm_setup

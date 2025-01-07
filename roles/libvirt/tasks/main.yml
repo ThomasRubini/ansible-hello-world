@@ -1,0 +1,21 @@
+---
+- name: Install libvirt packages
+  ansible.builtin.package:
+    name:
+      - libvirt-daemon
+      - libvirt-clients
+      - libvirt-daemon-system
+    state: present
+
+- name: Ensure libvirtd service is running
+  ansible.builtin.service:
+    name: libvirtd
+    state: started
+    enabled: true
+
+- name: Install packages to communicate with libvirt
+  ansible.builtin.package:
+    name:
+      - python3-libvirt
+      - python3-lxml
+    state: present
